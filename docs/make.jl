@@ -5,7 +5,6 @@ makedocs(
     sitename = "EmpiricalTightBinding.jl",
     modules = [EmpiricalTightBinding],
     authors = "Hiroharu Sugawara",
-    remotes = nothing,
     warnonly = [:missing_docs],
     format = Documenter.HTML(
         canonical = "https://hsugawa8651.github.io/EmpiricalTightBinding.jl",
