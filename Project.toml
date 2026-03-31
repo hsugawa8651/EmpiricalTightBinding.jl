@@ -1,0 +1,28 @@
+name = "EmpiricalTightBinding"
+uuid = "592ba744-f2ce-40dd-852e-7cfd1e22b0d7"
+version = "0.1.0"
+
+[deps]
+InteractiveUtils = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+
+[weakdeps]
+PythonPlot = "274fc56d-3b97-40fa-a1cd-1b4a50311bf9"
+RecipesBase = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
+
+[extensions]
+EmpiricalTightBindingPythonPlotExt = "PythonPlot"
+EmpiricalTightBindingRecipesBaseExt = "RecipesBase"
+
+[compat]
+julia = "1.10"
+PythonPlot = "1"
+RecipesBase = "1"
+
+[extras]
+PythonPlot = "274fc56d-3b97-40fa-a1cd-1b4a50311bf9"
+RecipesBase = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test", "RecipesBase", "PythonPlot"]
