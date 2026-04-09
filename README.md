@@ -3,6 +3,7 @@
 [![CI](https://github.com/hsugawa8651/EmpiricalTightBinding.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/hsugawa8651/EmpiricalTightBinding.jl/actions/workflows/CI.yml)
 [![Stable Docs](https://img.shields.io/badge/docs-stable-blue.svg)](https://hsugawa8651.github.io/EmpiricalTightBinding.jl/stable/)
 [![Dev Docs](https://img.shields.io/badge/docs-dev-blue.svg)](https://hsugawa8651.github.io/EmpiricalTightBinding.jl/dev/)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19477635.svg)](https://doi.org/10.5281/zenodo.19477635)
 
 Educational Julia package for empirical tight-binding band structure calculations of semiconductors.
 
