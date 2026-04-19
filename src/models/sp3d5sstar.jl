@@ -42,24 +42,27 @@ function _fill_pd!(T, ip, id, l, m, n, Vσ, Vπ, s)
     T[ip + 2, id + 4] = s * (n * (n^2 - (l^2 + m^2) / 2) * Vσ + √3 * n * (l^2 + m^2) * Vπ)
 end
 
-"""Fill d→p sub-block T[id:id+4, ip:ip+2] via transposed p→d SK formula."""
-function _fill_dp!(T, id, ip, l, m, n, Vσ, Vπ)
+"""Fill d→p sub-block T[id:id+4, ip:ip+2] via transposed p→d SK formula.
+
+Per SK Table I (1954), E_{d,p}(R̂) = -E_{p,d}(R̂) due to parity (-1)^(ℓ_p+ℓ_d) = -1.
+Caller passes s = -1 for standard d_anion → p_cation (anion-cation NN bond)."""
+function _fill_dp!(T, id, ip, l, m, n, Vσ, Vπ, s)
     tmp = zeros(3, 5)
-    tmp[1, 1] = √3 * l^2 * m * Vσ + m * (1 - 2l^2) * Vπ
-    tmp[1, 2] = √3 * l * m * n * Vσ - 2l * m * n * Vπ
-    tmp[1, 3] = √3 * l^2 * n * Vσ + n * (1 - 2l^2) * Vπ
-    tmp[1, 4] = (√3 / 2) * l * (l^2 - m^2) * Vσ + l * (1 - l^2 + m^2) * Vπ
-    tmp[1, 5] = l * (n^2 - (l^2 + m^2) / 2) * Vσ - √3 * l * n^2 * Vπ
-    tmp[2, 1] = √3 * m^2 * l * Vσ + l * (1 - 2m^2) * Vπ
-    tmp[2, 2] = √3 * m^2 * n * Vσ + n * (1 - 2m^2) * Vπ
-    tmp[2, 3] = √3 * m * n * l * Vσ - 2m * n * l * Vπ
-    tmp[2, 4] = (√3 / 2) * m * (l^2 - m^2) * Vσ - m * (1 + l^2 - m^2) * Vπ
-    tmp[2, 5] = m * (n^2 - (l^2 + m^2) / 2) * Vσ - √3 * m * n^2 * Vπ
-    tmp[3, 1] = √3 * n * l * m * Vσ - 2n * l * m * Vπ
-    tmp[3, 2] = √3 * n^2 * m * Vσ + m * (1 - 2n^2) * Vπ
-    tmp[3, 3] = √3 * n^2 * l * Vσ + l * (1 - 2n^2) * Vπ
-    tmp[3, 4] = (√3 / 2) * n * (l^2 - m^2) * Vσ - n * (l^2 - m^2) * Vπ
-    tmp[3, 5] = n * (n^2 - (l^2 + m^2) / 2) * Vσ + √3 * n * (l^2 + m^2) * Vπ
+    tmp[1, 1] = s * (√3 * l^2 * m * Vσ + m * (1 - 2l^2) * Vπ)
+    tmp[1, 2] = s * (√3 * l * m * n * Vσ - 2l * m * n * Vπ)
+    tmp[1, 3] = s * (√3 * l^2 * n * Vσ + n * (1 - 2l^2) * Vπ)
+    tmp[1, 4] = s * ((√3 / 2) * l * (l^2 - m^2) * Vσ + l * (1 - l^2 + m^2) * Vπ)
+    tmp[1, 5] = s * (l * (n^2 - (l^2 + m^2) / 2) * Vσ - √3 * l * n^2 * Vπ)
+    tmp[2, 1] = s * (√3 * m^2 * l * Vσ + l * (1 - 2m^2) * Vπ)
+    tmp[2, 2] = s * (√3 * m^2 * n * Vσ + n * (1 - 2m^2) * Vπ)
+    tmp[2, 3] = s * (√3 * m * n * l * Vσ - 2m * n * l * Vπ)
+    tmp[2, 4] = s * ((√3 / 2) * m * (l^2 - m^2) * Vσ - m * (1 + l^2 - m^2) * Vπ)
+    tmp[2, 5] = s * (m * (n^2 - (l^2 + m^2) / 2) * Vσ - √3 * m * n^2 * Vπ)
+    tmp[3, 1] = s * (√3 * n * l * m * Vσ - 2n * l * m * Vπ)
+    tmp[3, 2] = s * (√3 * n^2 * m * Vσ + m * (1 - 2n^2) * Vπ)
+    tmp[3, 3] = s * (√3 * n^2 * l * Vσ + l * (1 - 2n^2) * Vπ)
+    tmp[3, 4] = s * ((√3 / 2) * n * (l^2 - m^2) * Vσ - n * (l^2 - m^2) * Vπ)
+    tmp[3, 5] = s * (n * (n^2 - (l^2 + m^2) / 2) * Vσ + √3 * n * (l^2 + m^2) * Vπ)
 
     for α = 0:4, β = 0:2
         T[id + α, ip + β] = tmp[β + 1, α + 1]
@@ -136,8 +139,8 @@ function _sk_bond_matrix!(T, l, m, n, p)
             dc[α] * dc[β] * (p[:pp_sig] - p[:pp_pi])
         end
     end
-    # p_a → d_c (sign −1)
-    _fill_pd!(T, 2, 5, l, m, n, p[:pa_dc_sig], p[:pa_dc_pi], -1)
+    # p_a → d_c (SK Table I: E_{p,d} positive, no parity flip)
+    _fill_pd!(T, 2, 5, l, m, n, p[:pa_dc_sig], p[:pa_dc_pi], +1)
     # p_a → s*_c (sign −1)
     T[2, 10] = -l * p[:stc_pa]
     T[3, 10] = -m * p[:stc_pa]
@@ -149,8 +152,8 @@ function _sk_bond_matrix!(T, l, m, n, p)
     T[7, 1] = √3 * n * l * p[:sc_da]
     T[8, 1] = (√3 / 2) * (l^2 - m^2) * p[:sc_da]
     T[9, 1] = (n^2 - (l^2 + m^2) / 2) * p[:sc_da]
-    # d_a → p_c
-    _fill_dp!(T, 5, 2, l, m, n, p[:pc_da_sig], p[:pc_da_pi])
+    # d_a → p_c (SK Table I parity: E_{d,p} = -E_{p,d})
+    _fill_dp!(T, 5, 2, l, m, n, p[:pc_da_sig], p[:pc_da_pi], -1)
     # d_a → d_c
     _fill_dd!(T, 5, 5, l, m, n, p[:dd_sig], p[:dd_pi], p[:dd_del])
     # d_a → s*_c
