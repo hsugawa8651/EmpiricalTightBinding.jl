@@ -9,11 +9,22 @@ GA-optimized sp3s* parameters for 9 III-V compounds.
 Vogl convention (V parameters, not bare SK integrals).
 Lattice constants converted from nm to Å.
 Δ_a, Δ_c are FULL spin-orbit splitting (use Δ/3 in Hamiltonian).
+
+Note on InSb lattice constant: Klimeck Table 1 prints InSb a = 0.60583 nm,
+which is identical to the InAs value and is a typographical error in the
+source paper. We use the experimentally established value 6.4793 Å from
+Straumanis & Kim (1965) J. Appl. Phys. 36, 3822 (DOI: 10.1063/1.1713955),
+consistent with Vogl 1983 and Jancu 1998. The tight-binding parameters
+(E, V, Δ) for InSb remain Klimeck Table 1 values; only the lattice
+constant is corrected. An empirical check shows that computing InSb m*_Γ
+with a = 6.4793 Å gives a value closer to Klimeck's reported Table 3
+target than with the printed value, suggesting Klimeck's GA fit in fact
+used a = 6.4793 Å and only the printed table has the typo.
 =#
 
 const KLIMECK2000_RAW = """
               GaAs       AlAs       InAs       GaP        AlP        InP        GaSb       AlSb       InSb
-a          5.6660     5.6600     6.0583     5.4509     5.4635     5.8687     6.0959     6.1355     6.0583
+a          5.6660     5.6600     6.0583     5.4509     5.4635     5.8687     6.0959     6.1355     6.4793
 Es_a      -3.53284   -3.21537   -9.57566   -8.63163   -8.93519   -7.91404   -7.16208   -4.55720   -7.80905
 Ep_a       0.27772   -0.09711    0.02402    0.77214    1.13009    0.08442   -0.17071    0.01635   -0.14734
 Estar_a   12.33930   12.05550    7.44461   11.90050   12.82470    9.88869    7.32190    9.84286    7.43195
